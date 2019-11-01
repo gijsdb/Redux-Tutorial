@@ -2,9 +2,9 @@ import React from 'react'
 import { connect } from 'react-redux'
 import { addTodo } from '../actions'
 
+// The input form that accepts text for the todo
 const AddTodo = ({ dispatch }) => {
   let input
-
   return (
     <div>
       <form

@@ -2,6 +2,7 @@ import React from 'react'
 import FilterLink from '../containers/FilterLink'
 import { VisibilityFilters } from '../actions'
 
+// Shows visibility toggles in the footer as a FilterLink.
 const Footer = () => (
   <p>
     Show: <FilterLink filter={VisibilityFilters.SHOW_ALL}>All</FilterLink>

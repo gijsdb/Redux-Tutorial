@@ -3,6 +3,7 @@ import { toggleTodo } from '../actions'
 import TodoList from '../components/TodoList'
 import { VisibilityFilters } from '../actions'
 
+// Filters based on the actions
 const getVisibleTodos = (todos, filter) => {
   switch (filter) {
     case VisibilityFilters.SHOW_ALL:
@@ -16,6 +17,7 @@ const getVisibleTodos = (todos, filter) => {
   }
 }
 
+// Sets the state onto props so they can be passed around
 const mapStateToProps = state => ({
   todos: getVisibleTodos(state.todos, state.visibilityFilter)
 })

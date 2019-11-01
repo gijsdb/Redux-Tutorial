@@ -35257,17 +35257,20 @@ function ownKeys(object, enumerableOnly) { var keys = Object.keys(object); if (O
 
 function _objectSpread(target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i] != null ? arguments[i] : {}; if (i % 2) { ownKeys(source, true).forEach(function (key) { (0, _defineProperty2.default)(target, key, source[key]); }); } else if (Object.getOwnPropertyDescriptors) { Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)); } else { ownKeys(source).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } } return target; }
 
+// Handles adding and toggling todos
 var todos = function todos() {
   var state = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : [];
   var action = arguments.length > 1 ? arguments[1] : undefined;
 
   switch (action.type) {
+    // Return a new state with the new action added to the end
     case 'ADD_TODO':
       return [].concat((0, _toConsumableArray2.default)(state), [{
         id: action.id,
         text: action.text,
         completed: false
       }]);
+    // 
 
     case 'TOGGLE_TODO':
       return state.map(function (todo) {
@@ -35289,40 +35292,57 @@ exports.default = _default;
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.VisibilityFilters = exports.toggleTodo = exports.setVisibilityFilter = exports.addTodo = void 0;
+exports.VisibilityFilters = exports.toggleTodo = exports.setVisibilityFilter = exports.addTodo = exports.SHOW_ACTIVE = exports.SHOW_COMPLETED = exports.SHOW_ALL = exports.TOGGLE_TODO = exports.SET_VISIBILITY_FILTER = exports.ADD_TODO = void 0;
+// Holds all my actions for the app
 var nextTodoId = 0;
+var ADD_TODO = 'ADD_TODO';
+exports.ADD_TODO = ADD_TODO;
+var SET_VISIBILITY_FILTER = 'SET_VISIBILITY_FILTER';
+exports.SET_VISIBILITY_FILTER = SET_VISIBILITY_FILTER;
+var TOGGLE_TODO = 'TOGGLE_TODO';
+exports.TOGGLE_TODO = TOGGLE_TODO;
+var SHOW_ALL = 'SHOW_ALL';
+exports.SHOW_ALL = SHOW_ALL;
+var SHOW_COMPLETED = 'SHOW_COMPLETED';
+exports.SHOW_COMPLETED = SHOW_COMPLETED;
+var SHOW_ACTIVE = 'SHOW_ACTIVE'; // Add todo  and increment id
+
+exports.SHOW_ACTIVE = SHOW_ACTIVE;
 
 var addTodo = function addTodo(text) {
   return {
-    type: 'ADD_TODO',
+    type: ADD_TODO,
     id: nextTodoId++,
     text: text
   };
-};
+}; // Filter the list
+
 
 exports.addTodo = addTodo;
 
 var setVisibilityFilter = function setVisibilityFilter(filter) {
   return {
-    type: 'SET_VISIBILITY_FILTER',
+    type: SET_VISIBILITY_FILTER,
     filter: filter
   };
-};
+}; // Toggle a todo
+
 
 exports.setVisibilityFilter = setVisibilityFilter;
 
 var toggleTodo = function toggleTodo(id) {
   return {
-    type: 'TOGGLE_TODO',
+    type: TOGGLE_TODO,
     id: id
   };
-};
+}; // The different visibility filters exported as one
+
 
 exports.toggleTodo = toggleTodo;
 var VisibilityFilters = {
-  SHOW_ALL: 'SHOW_ALL',
-  SHOW_COMPLETED: 'SHOW_COMPLETED',
-  SHOW_ACTIVE: 'SHOW_ACTIVE'
+  SHOW_ALL: SHOW_ALL,
+  SHOW_COMPLETED: SHOW_COMPLETED,
+  SHOW_ACTIVE: SHOW_ACTIVE
 };
 exports.VisibilityFilters = VisibilityFilters;
 },{}],"src/reducers/visibilityFilter.js":[function(require,module,exports) {
@@ -35366,6 +35386,7 @@ var _visibilityFilter = _interopRequireDefault(require("./visibilityFilter"));
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
+// Combines the reducer todos and visibility filter
 var _default = (0, _redux.combineReducers)({
   todos: _todos.default,
   visibilityFilter: _visibilityFilter.default
@@ -35389,18 +35410,12 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 var Link = function Link(_ref) {
   var active = _ref.active,
       children = _ref.children,
-      _onClick = _ref.onClick;
-
-  if (active) {
-    return _react.default.createElement("span", null, children);
-  }
-
-  return _react.default.createElement("a", {
-    href: "",
-    onClick: function onClick(e) {
-      e.preventDefault();
-
-      _onClick();
+      onClick = _ref.onClick;
+  return _react.default.createElement("button", {
+    onClick: onClick,
+    disabled: active,
+    style: {
+      marginLeft: '4px'
     }
   }, children);
 };
@@ -35549,6 +35564,7 @@ var _propTypes = _interopRequireDefault(require("prop-types"));
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
+// Each todo is a list item
 var Todo = function Todo(_ref) {
   var onClick = _ref.onClick,
       completed = _ref.completed,
@@ -35588,13 +35604,13 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 
 var TodoList = function TodoList(_ref) {
   var todos = _ref.todos,
-      onTodoClick = _ref.onTodoClick;
-  return _react.default.createElement("ul", null, todos.map(function (todo, index) {
+      toggleTodo = _ref.toggleTodo;
+  return _react.default.createElement("ul", null, todos.map(function (todo) {
     return _react.default.createElement(_Todo.default, (0, _extends2.default)({
-      key: index
+      key: todo.id
     }, todo, {
       onClick: function onClick() {
-        return onTodoClick(index);
+        return toggleTodo(todo.id);
       }
     }));
   }));
@@ -35606,7 +35622,7 @@ TodoList.propTypes = {
     completed: _propTypes.default.bool.isRequired,
     text: _propTypes.default.string.isRequired
   }).isRequired).isRequired,
-  onTodoClick: _propTypes.default.func.isRequired
+  toggleTodo: _propTypes.default.func.isRequired
 };
 var _default = TodoList;
 exports.default = _default;
@@ -35681,6 +35697,7 @@ var _VisibleTodoList = _interopRequireDefault(require("./containers/VisibleTodoL
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
+// Sets up the layout of the application
 var App = function App() {
   return _react.default.createElement("div", null, _react.default.createElement(_AddTodo.default, null), _react.default.createElement(_VisibleTodoList.default, null), _react.default.createElement(_Footer.default, null));
 };
@@ -35704,7 +35721,8 @@ var _App = _interopRequireDefault(require("./App"));
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-var store = (0, _redux.createStore)(_reducers.default);
+var store = (0, _redux.createStore)(_reducers.default); // The App is wrapped in a provider so the whole app can access the store
+
 (0, _reactDom.render)(_react.default.createElement(_reactRedux.Provider, {
   store: store
 }, _react.default.createElement(_App.default, null)), document.getElementById('root'));
@@ -35736,7 +35754,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = "" || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + "60932" + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + "55502" + '/');
 
   ws.onmessage = function (event) {
     checkedAssets = {};

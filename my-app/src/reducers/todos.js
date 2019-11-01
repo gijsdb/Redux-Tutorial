@@ -1,5 +1,7 @@
+// Handles adding and toggling todos
 const todos = (state = [], action) => {
     switch (action.type) {
+      // Return a new state with the new action added to the end
       case 'ADD_TODO':
         return [
           ...state,
@@ -9,6 +11,7 @@ const todos = (state = [], action) => {
             completed: false
           }
         ]
+      // 
       case 'TOGGLE_TODO':
         return state.map(todo =>
           todo.id === action.id ? { ...todo, completed: !todo.completed } : todo

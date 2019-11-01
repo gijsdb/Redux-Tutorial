@@ -7,6 +7,7 @@ import App from './App'
 
 const store = createStore(rootReducer)
 
+// The App is wrapped in a provider so the whole app can access the store
 render(
   <Provider store={store}>
     <App />
